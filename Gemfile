@@ -1,3 +1,3 @@
-ource 'https://rubygems.org'
+source 'https://rubygems.org'
 gem 'awesome_print'
 gem 'docker-api', :require => 'docker'
