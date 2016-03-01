@@ -6,6 +6,8 @@ if [ ! -d $app_dir ]; then
 	echo "请运行source ~/.bashrc使环境变量生效"
 fi
 
-cp app.rb $app_idr/tiny_dep
-chmod +x $app_idr/tiny_dep
+cp app.rb $app_dir/tiny_dep
+chmod +x $app_dir/tiny_dep
+
+
 
