@@ -6,9 +6,8 @@ if [ ! -d $app_dir ]; then
 	echo "请运行source ~/.bashrc使环境变量生效"
 fi
 
-if [ -x "/usr/bin/ruby" ]; then
-	apt-get update && apt-get install -y ruby
-	gem install bundle
+if [ ! -f "/usr/bin/ruby" ]; then
+	apt-get update && apt-get install -y ruby && gem install bundle
 fi
 
 bundle install
