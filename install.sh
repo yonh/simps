@@ -7,7 +7,7 @@ if [ ! -d $app_dir ]; then
 fi
 
 if [ ! -f "/usr/bin/ruby" ]; then
-	apt-get update && apt-get install -y ruby-dev && gem install bundle
+	apt-get update && apt-get install -y ruby-dev make && gem install bundle
 fi
 
 bundle install
