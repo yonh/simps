@@ -22,3 +22,11 @@ def inc_project_count
 	count += 1
 	File.open(file, "w") { |f| f.puts count }
 end
+
+# 打印项目更新地址
+def project_update_url(name)
+	file = File.dirname(__FILE__)+"/db/server_ip"
+	ip = File.read(file).rstrip
+	"http://#{ip}:9999/update/#{name}"
+end
+

@@ -18,3 +18,4 @@ cp app.rb $app_dir/tiny_dep
 chmod +x $app_dir/tiny_dep
 cp functions.rb $app_dir/
 
+echo "请修改文件$app_dir/db/server_ip内容更改为您服务器ip"

@@ -76,5 +76,7 @@ if arg0 == "new"
 	end
 	#项目数自增
 	inc_project_count	
+	url = project_update_url
+	puts "请配置您的项目的webhook地址为: #{url}"
 end
 
