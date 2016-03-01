@@ -14,6 +14,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   docker-api
+  json (= 1.8.3)
 
 BUNDLED WITH
    1.11.2
