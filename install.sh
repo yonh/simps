@@ -16,6 +16,5 @@ bundle install
 
 cp app.rb $app_dir/tiny_dep
 chmod +x $app_dir/tiny_dep
-
-
+cp functions.rb $app_dir/
 

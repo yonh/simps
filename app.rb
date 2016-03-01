@@ -36,7 +36,7 @@ end.parse!
 arg0 =  ARGV[0]
 Docker.url='unix:///var/run/docker.sock'
 
-require './functions.rb'
+require File.dirname(__FILE__) + '/functions.rb'
 
 if arg0 == "images" then
 	system("docker ps")
