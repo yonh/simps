@@ -30,7 +30,7 @@ option_parser = OptionParser.new do |opts|
   end
 end.parse!
 
-puts options.inspect
+#puts options.inspect
 
 
 arg0 =  ARGV[0]
@@ -47,6 +47,9 @@ if arg0 == "images" then
 end
 
 
+if arg0 == "count"
+	puts get_project_count
+end
 if arg0 == "new"
 	puts "请输入项目名称,唯一，不可重复，仅允许英文:"
 	name = STDIN.gets.rstrip
@@ -56,12 +59,7 @@ if arg0 == "new"
                 exit
         end
 	
-	puts "请输入项目使用端口:"
-	port = STDIN.gets.to_i
-	if port < 10000 then
-		puts "端口不允许小于10000"
-		exit
-	end
+	port = get_project_count + 10000
 	
 	puts "请输入监听域名:"
 	server_name = STDIN.gets.rstrip
@@ -76,7 +74,7 @@ if arg0 == "new"
 		puts "写入配置文件失败"
 		exit
 	end
-	
-	
+	#项目数自增
+	inc_project_count	
 end
 

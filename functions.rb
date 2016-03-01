@@ -11,3 +11,13 @@ def write_to_file (file, txt)
 		true
 	end	
 end
+
+
+def get_project_count
+	File.read("db/project_count").to_i
+end
+def inc_project_count
+	count = File.read("db/project_count").to_i
+	count += 1
+	File.open("db/project_count", "w") { |f| f.puts count }
+end
