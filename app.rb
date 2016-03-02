@@ -51,7 +51,7 @@ if arg0 == "count"
 	puts get_project_count
 end
 if arg0 == "new"
-	puts "请输入项目名称,唯一，不可重复，仅允许英文:"
+	puts "请输入项目名称,唯一，不可重复，仅允许英文数字:"
 	name = STDIN.gets.rstrip
 	nginx_config_file = "/etc/nginx/conf.d/"+name+".conf"
 	if File.exists?(nginx_config_file) then
@@ -61,11 +61,11 @@ if arg0 == "new"
 	
 	port = get_project_count + 10000
 	
-	puts "请输入监听域名:"
+	puts "请输入域名,多个域名使用空格间隔:"
 	server_name = STDIN.gets.rstrip
 	
 
-	nginx_config_tpl = File.read("nginx.conf.tpl")
+	nginx_config_tpl = File.read(File.dirname(__FILE__)+"/nginx.conf.tpl")
 	nginx_config_tpl = nginx_config_tpl.gsub("{appname}", name)
 	nginx_config_tpl = nginx_config_tpl.gsub("{port}", port.to_s)
 	nginx_config_tpl = nginx_config_tpl.gsub("{server_name}", server_name)
@@ -74,9 +74,20 @@ if arg0 == "new"
 		puts "写入配置文件失败"
 		exit
 	end
+
+	puts "请输入项目git库下载地址"
+	git  = STDIN.gets.rstrip	
+	# 下载代码
+	system("git clone #{git} /www/#{name}")
+	image = "tinystime/php-apache2"
+	volume = " -v /www/#{name}/app:/var/www/html"
+	limit = " -m 200m --memory-swap=200m"
+	system("docker run -d --restart=always --name web_#{name} -p #{port}:80 #{volume} #{limit} #{image}")
+
 	#项目数自增
 	inc_project_count	
-	url = project_update_url
+	url = project_update_url(name)
 	puts "请配置您的项目的webhook地址为: #{url}"
+	system("service nginx reload > /dev/null")
 end
 

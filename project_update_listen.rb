@@ -5,7 +5,7 @@ require 'sinatra'
 set :port, 9999
 set :bind, '0.0.0.0'
 
-get '/update/:name' do
+post '/update/:name' do
 	#name = /[a-zA-Z]\w*/.match(params[:name])
 	name = params[:name]
 	dir="/www/"+name	
