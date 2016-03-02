@@ -14,8 +14,10 @@ fi
 bundle install
 
 
-cp app.rb $app_dir/tiny_dep
-chmod +x $app_dir/tiny_dep
+echo ""
+cp app.rb $app_dir/tiny_dep && chmod +x $app_dir/tiny_dep
+cp project_update_listen.rb $app_dir/project_update_listen && chmod +x $app_dir/project_update_listen
 cp functions.rb $app_dir/
+cp nginx.conf.tpl $app_dir/
 
 echo "请修改文件$app_dir/db/server_ip内容更改为您服务器ip"
