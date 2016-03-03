@@ -4,6 +4,7 @@
 require 'awesome_print'
 require 'docker'
 require 'optparse'
+require 'json'
 
 options = {}
 option_parser = OptionParser.new do |opts|
@@ -54,7 +55,7 @@ if arg0 == "new"
 	puts "请输入项目名称,唯一，不可重复，仅允许英文数字:"
 	name = STDIN.gets.rstrip
 	nginx_config_file = "/etc/nginx/conf.d/"+name+".conf"
-	if File.exists?(nginx_config_file) then
+	if File.exists?(nginx_config_file) or get_project(name)!=nil then
                 puts "该项目已存在,请选择其他名称"
                 exit
         end
@@ -63,7 +64,6 @@ if arg0 == "new"
 	
 	puts "请输入域名,多个域名使用空格间隔:"
 	server_name = STDIN.gets.rstrip
-	
 
 	nginx_config_tpl = File.read(File.dirname(__FILE__)+"/nginx.conf.tpl")
 	nginx_config_tpl = nginx_config_tpl.gsub("{appname}", name)
@@ -84,6 +84,17 @@ if arg0 == "new"
 	limit = " -m 200m --memory-swap=200m"
 	system("docker run -d --restart=always --name web_#{name} -p #{port}:80 #{volume} #{limit} #{image}")
 
+	# 保存项目数据
+	project = Hash.new
+	project['id'] = get_project_count
+	project['name'] = name
+	project['port'] = port
+	project['git'] = git
+	project['image'] = image
+	project['limit'] = limit
+	project['update_hook_url'] = project_update_url(name)
+	add_project(project)
+	
 	#项目数自增
 	inc_project_count	
 	url = project_update_url(name)
