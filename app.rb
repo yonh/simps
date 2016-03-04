@@ -80,7 +80,7 @@ if arg0 == "new"
 	# 下载代码
 	system("git clone #{git} /www/#{name}")
 	image = "tinystime/php-apache2"
-	volume = " -v /www/#{name}/app:/var/www/html"
+	volume = " -v /www/#{name}/app:/www"
 	limit = " -m 200m --memory-swap=200m"
 	system("docker run -d --restart=always --name web_#{name} -p #{port}:80 #{volume} #{limit} #{image}")
 
