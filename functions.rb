@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'json'
 
 def write_to_file (file, txt)
 	if File.exists?(file) then
@@ -57,3 +58,21 @@ def add_project(data)
 	end
 end
 
+def db_file(file)
+	File.dirname(__FILE__)+"/db/" + file
+end
+def get_auth_ip
+	file = db_file("auth_ip")
+        unless File.file?(file) then system("echo '[]'> #{file}") end
+        return JSON.parse(File.read(file))
+end
+def add_auth_ip(ip)
+	file = db_file("auth_ip")
+	json = get_auth_ip
+	if json.index(ip)==nil then
+		json.push ip
+		File.open(file,"w") do |f|
+			f.puts json.to_json
+		end
+	end
+end
