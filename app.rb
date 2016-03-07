@@ -48,6 +48,23 @@ if arg0 == "images" then
 end
 
 # 停止项目
+if arg0 == "start" then
+	projects = get_projects
+	projects.each do |proj|
+		printf("%-2s %-15s\n", proj['id'], proj['name'])
+	end
+
+	puts "请输入要启动的项目id"
+	id = STDIN.gets.to_i
+	project = get_project_by_id(id)
+	if project then
+		system("docker start #{project['container']}")
+	else
+		puts "项目不存在"
+	end
+end
+
+# 停止项目
 if arg0 == "stop" then
 	projects = get_projects
 	projects.each do |proj|
