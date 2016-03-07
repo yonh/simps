@@ -49,6 +49,14 @@ def get_project(name)
 	nil
 end
 
+def get_project_by_id(id)
+	projects = get_projects
+	projects.each do |p|
+		if p['id'] == id then return p end
+	end
+	nil
+end
+
 def add_project(data)
 	file = File.dirname(__FILE__)+"/db/projects"
 	json = get_projects	

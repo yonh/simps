@@ -47,6 +47,22 @@ if arg0 == "images" then
 	#end
 end
 
+# 停止项目
+if arg0 == "stop" then
+	projects = get_projects
+	projects.each do |proj|
+		printf("%-2s %-15s\n", proj['id'], proj['name'])
+	end
+
+	puts "请输入要停止的项目id"
+	id = STDIN.gets.to_i
+	project = get_project_by_id(id)
+	if project then
+		system("docker stop #{project['container']}")
+	else
+		puts "项目不存在"
+	end
+end
 
 if arg0 == "count"
 	puts get_project_count
@@ -79,15 +95,17 @@ if arg0 == "new"
 	git  = STDIN.gets.rstrip	
 	# 下载代码
 	system("git clone #{git} /www/#{name}")
+	container = "web_#{name}"
 	image = "tinystime/php-apache2"
 	volume = " -v /www/#{name}/app:/www"
 	limit = " -m 200m --memory-swap=200m"
-	system("docker run -d --restart=always --name web_#{name} -p #{port}:80 #{volume} #{limit} #{image}")
+	system("docker run -d --restart=always --name #{container} -p #{port}:80 #{volume} #{limit} #{image}")
 
 	# 保存项目数据
 	project = Hash.new
 	project['id'] = get_project_count
 	project['name'] = name
+	project['container'] = container
 	project['port'] = port
 	project['git'] = git
 	project['image'] = image
