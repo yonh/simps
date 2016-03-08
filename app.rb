@@ -51,10 +51,15 @@ if arg0 == "stop" then
 	end
 end
 
-if arg0 == "count"
+if arg0 == "rm" then
+	id = project_select
+	del_project(id)
+end
+
+if arg0 == "count" then
 	puts get_project_count
 end
-if arg0 == "new"
+if arg0 == "new" then
 	puts "请输入项目名称,唯一，不可重复，仅允许英文数字:"
 	name = STDIN.gets.rstrip
 	nginx_config_file = "/etc/nginx/conf.d/"+name+".conf"
@@ -81,7 +86,8 @@ if arg0 == "new"
 	puts "请输入项目git库下载地址"
 	git  = STDIN.gets.rstrip	
 	# 下载代码
-	system("git clone #{git} /www/#{name}")
+	app_dir= "/www/#{name}"
+	system("git clone #{git} #{app_dir}")
 	container = "web_#{name}"
 	image = "tinystime/php-apache2"
 	volume = " -v /www/#{name}/app:/www"
@@ -92,6 +98,7 @@ if arg0 == "new"
 	project = Hash.new
 	project['id'] = get_project_count
 	project['name'] = name
+	project['app_dir'] = app_dir
 	project['container'] = container
 	project['port'] = port
 	project['git'] = git

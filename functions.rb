@@ -50,11 +50,12 @@ def get_project(name)
 end
 
 def get_project_by_id(id)
-	projects = get_projects
-	projects.each do |p|
-		if p['id'] == id then return p end
+	if id!=nil then
+		projects = get_projects
+		projects.each do |p|
+			if p['id'] == id then return p end
+		end
 	end
-	nil
 end
 
 def add_project(data)
@@ -64,6 +65,26 @@ def add_project(data)
 	File.open(file, 'w') do |f|
 		f.puts json.to_json
 	end
+end
+
+def del_project(id)
+	proj = get_project_by_id(id)
+	if proj != nil then
+                # 删除nginx配置文件
+                system("rm -rf /etc/nginx/conf.d/#{proj['name']}.conf")
+                # 删除容器
+                system("docker rm -f #{proj['container']}")
+                # 删除本地文件
+                system("rm -rf #{proj['app_dir']}")
+                # 删除项目记录
+		projects = get_projects
+		projects.delete_if { |pp| pp['id'] == id }
+		file = db_file("projects")
+        	File.open(file, 'w') do |f|
+               		f.puts projects.to_json
+        	end
+                # 删除数据库
+        end
 end
 
 def db_file(file)
@@ -84,3 +105,21 @@ def add_auth_ip(ip)
 		end
 	end
 end
+
+# 选择项目并返回项目信息,不存在返回nil
+def project_select
+	projects = get_projects
+        projects.each do |proj|
+                printf("%-2s %-15s\n", proj['id'], proj['name'])
+        end
+
+        puts "请选择项目 (0取消)"
+        id = STDIN.gets.to_i
+	if id==0 then
+		nil
+	else
+		id
+	end
+end
+
+
