@@ -16,4 +16,3 @@ sed -i 's/Options Indexes FollowSymLinks/Options FollowSymLinks/g' /etc/apache2/
 # 修改时区
 cp /usr/share/zoneinfo/PRC /etc/localtime
 
-
