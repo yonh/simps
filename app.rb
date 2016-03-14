@@ -54,6 +54,21 @@ if arg0 == "stop" then
 	end
 end
 
+if arg0 == "redeploy" then
+	id = project_select
+	project = get_project_by_id(id)
+	if project then
+		system("docker rm -f #{project['container']}")
+		command = "docker run -d --restart=always --name #{project['container']} "
+		command+= " -p #{project['port']}:80"
+		command+= " -v #{project['volume']}"
+		command+= " #{project['limit']}"
+		command+= " #{project['image']}"
+		system(command)
+	#	system(command)
+	end
+end
+
 if arg0 == "rm" then
 	id = project_select
 	del_project(id)
@@ -98,9 +113,9 @@ if arg0 == "new" then
 	end
 
 	container = "web_#{name}"
-	volume = " -v /www/#{name}/app:/www"
+	volume = "/www/#{name}/app:/www"
 	limit = " -m 200m --memory-swap=200m"
-	system("docker run -d --restart=always --name #{container} -p #{port}:80 #{volume} #{limit} #{image}")
+	system("docker run -d --restart=always --name #{container} -p #{port}:80 -v #{volume} #{limit} #{image}")
 
 	# 保存项目数据
 	project = Hash.new
@@ -110,6 +125,7 @@ if arg0 == "new" then
 	project['container'] = container
 	project['port'] = port
 	project['git'] = git
+	project['volume'] = volume
 	project['image'] = image
 	project['limit'] = limit
 	project['update_hook_url'] = project_update_url(name)

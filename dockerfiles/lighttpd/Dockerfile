@@ -1,8 +1,10 @@
-FROM alpine
+FROM debian:jessie
 
-RUN apk add --update lighttpd && rm -rf /var/cache/apk/* && \
-	sed -i 's/\/var\/www\/localhost/\/www/g' /etc/lighttpd/lighttpd.conf
+RUN apt-get update && apt-get -y install lighttpd
+RUN  echo server.network-backend = \"writev\" >> /etc/lighttpd/lighttpd.conf && rm -rf /var/cache/apt/* && \
+	sed -i 's/\/var\/www\/html/\/www/g' /etc/lighttpd/lighttpd.conf''
+
 EXPOSE 80
-VOLUME /var/www/localhost/htdocs
+VOLUME /www
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
 
