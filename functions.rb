@@ -147,3 +147,15 @@ def image_select
 	end
 end
 
+def redeploy(id)
+	project = get_project_by_id(id)
+	if project then
+		system("docker rm -f #{project['container']}")
+		command = "docker run -d --restart=always --name #{project['container']}"
+		command+= " -p #{project['port']}:80"
+		command+= " -v #{project['volume']}"
+		command+= " #{project['limit']}"
+		command+= " #{project['image']}"
+		system(command)
+	end
+end

@@ -54,18 +54,16 @@ if arg0 == "stop" then
 	end
 end
 
+# 重新部署
 if arg0 == "redeploy" then
 	id = project_select
-	project = get_project_by_id(id)
-	if project then
-		system("docker rm -f #{project['container']}")
-		command = "docker run -d --restart=always --name #{project['container']} "
-		command+= " -p #{project['port']}:80"
-		command+= " -v #{project['volume']}"
-		command+= " #{project['limit']}"
-		command+= " #{project['image']}"
-		system(command)
-	#	system(command)
+	redeploy(id)
+end
+# 重新部署所有
+if arg0 == "redeployall" then
+	projects =  get_projects
+	projects.each do |proj|
+		redeploy(proj['id'])
 	end
 end
 
