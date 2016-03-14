@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 require 'json'
+require 'docker'
+
+Docker.url='unix:///var/run/docker.sock'
 
 def write_to_file (file, txt)
 	if File.exists?(file) then
@@ -122,4 +125,25 @@ def project_select
 	end
 end
 
+# 选择镜像,不存在返回nil
+def image_select 
+	hash = Hash.new
+	images = Docker::Image.all
+	index = 0
+	images.each do |img|
+		image = img.info['RepoTags'][0].to_s
+		if image != "<none>:<none>" then
+			index += 1
+			hash[index] = image
+			printf("%-2s %-15s\n", index, image);
+		end
+	end
+	puts "请选择镜像 (0取消)"
+	id = STDIN.gets.to_i
+	if id==0 then
+		nil
+	else
+		hash[id]
+	end
+end
 

@@ -4,11 +4,14 @@
 require 'awesome_print'
 require 'optparse'
 require 'json'
+require 'docker'
+
+Docker.url='unix:///var/run/docker.sock'
+
 
 arg0 =  ARGV[0]
 
 require File.dirname(__FILE__) + '/functions.rb'
-
 if arg0 == "images" then
 	system("docker ps")
 	#images = Docker::Image.all
@@ -88,8 +91,13 @@ if arg0 == "new" then
 	# 下载代码
 	app_dir= "/www/#{name}"
 	system("git clone #{git} #{app_dir}")
+
+	image = image_select
+	if image == nil then
+		image = "tinystime/php-apache2:latest"
+	end
+
 	container = "web_#{name}"
-	image = "tinystime/php-apache2"
 	volume = " -v /www/#{name}/app:/www"
 	limit = " -m 200m --memory-swap=200m"
 	system("docker run -d --restart=always --name #{container} -p #{port}:80 #{volume} #{limit} #{image}")
