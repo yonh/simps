@@ -159,3 +159,13 @@ def redeploy(id)
 		system(command)
 	end
 end
+
+def color_print(text, color)
+	if color == "white" then
+		puts "\033[1m#{text}\033[0m"
+	elsif color == "yellow"
+		puts "\033[33m#{text}\033[0m"
+	elsif color == "green"
+		puts "\033[32m#{text}\033[0m"
+	end
+end

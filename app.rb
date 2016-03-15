@@ -8,7 +8,6 @@ require 'docker'
 
 Docker.url='unix:///var/run/docker.sock'
 
-
 arg0 =  ARGV[0]
 
 require File.dirname(__FILE__) + '/functions.rb'
@@ -112,7 +111,7 @@ if arg0 == "new" then
 
 	container = "web_#{name}"
 	volume = "/www/#{name}/app:/www"
-	limit = " -m 200m --memory-swap=200m"
+	limit = "-m 200m --memory-swap=200m"
 	system("docker run -d --restart=always --name #{container} -p #{port}:80 -v #{volume} #{limit} #{image}")
 
 	# 保存项目数据
@@ -136,3 +135,40 @@ if arg0 == "new" then
 	system("service nginx reload > /dev/null")
 end
 
+# 查看项目列表
+if arg0 == "ls" then
+	layout = "%-3s %-20s\n"
+	printf(layout, "id", "项目名称")
+	projects = get_projects
+	projects.each do |proj|
+		printf(layout, proj['id'], proj['name'])
+	end
+
+	color_print("也可以使用tiny_dep info id 显示详情", "yellow")
+end
+
+# 查看项目详情
+if arg0 == "info" then
+	key_array = [
+		["id","项目id"],
+		["name", "名称"],
+		["port", "端口"],
+		["git", "git地址"],
+		["image", "镜像"],
+		["container", "容器"],
+		["update_hook_url", "hook更新地址"],
+		["limit","限制"]]
+	id = ARGV[1]
+	layout = "%-15s : %-10s\n"
+		proj = get_project_by_id(id.to_i)
+		if proj then
+			key_array.each do |arr|
+				printf(layout, arr[1], proj[arr[0]])
+			end
+		else
+			
+			puts "项目不存在"
+		end
+		
+		
+	end
