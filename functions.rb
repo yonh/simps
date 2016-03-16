@@ -36,14 +36,14 @@ def project_update_url(name)
 	ip = File.read(file).rstrip
 	"http://#{ip}:9999/update/#{name}"
 end
-
+# 获取所有项目
 def get_projects
 	file = File.dirname(__FILE__)+"/db/projects"
 	unless File.file?(file) then system("echo '[]'> #{file}") end
 
 	return JSON.parse(File.read(file))
 end
-
+# 根据name获取项目
 def get_project(name)
 	projects = get_projects
 	projects.each do |p|
@@ -52,6 +52,7 @@ def get_project(name)
 	nil
 end
 
+# 根据id获取项目信息
 def get_project_by_id(id)
 	if id!=nil then
 		projects = get_projects
@@ -61,6 +62,7 @@ def get_project_by_id(id)
 	end
 end
 
+# 添加项目
 def add_project(data)
 	file = File.dirname(__FILE__)+"/db/projects"
 	json = get_projects	
@@ -73,21 +75,43 @@ end
 def del_project(id)
 	proj = get_project_by_id(id)
 	if proj != nil then
-                # 删除nginx配置文件
-                system("rm -rf /etc/nginx/conf.d/#{proj['name']}.conf")
-                # 删除容器
-                system("docker rm -f #{proj['container']}")
-                # 删除本地文件
-                system("rm -rf #{proj['app_dir']}")
-                # 删除项目记录
+    	# 删除nginx配置文件
+       	system("rm -rf /etc/nginx/conf.d/#{proj['name']}.conf")
+       	# 删除容器
+       	system("docker rm -f #{proj['container']}")
+       	# 删除本地文件
+		system("rm -rf #{proj['app_dir']}")
+       	# 删除项目记录
 		projects = get_projects
-		projects.delete_if { |pp| pp['id'] == id }
+		projects.delete_if { |proj| proj['id'] == id }
 		file = db_file("projects")
         	File.open(file, 'w') do |f|
                		f.puts projects.to_json
         	end
-                # 删除数据库
+            # 删除数据库
         end
+end
+
+# 更新project信息
+def update_project_info(data)
+	change = false
+	projects = get_projects
+	projects.each do |proj|
+		if proj['id'] == data['id'] then
+			change = true
+			data.each do |k, v|
+				proj[k] = v
+			end
+			break
+		end
+	end
+	# save change
+	if change then
+		file = db_file("projects")
+        File.open(file, 'w') do |f|
+       		f.puts projects.to_json
+        end
+	end
 end
 
 def db_file(file)

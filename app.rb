@@ -160,15 +160,45 @@ if arg0 == "info" then
 		["limit","限制"]]
 	id = ARGV[1]
 	layout = "%-15s : %-10s\n"
-		proj = get_project_by_id(id.to_i)
-		if proj then
-			key_array.each do |arr|
-				printf(layout, arr[1], proj[arr[0]])
-			end
-		else
-			
-			puts "项目不存在"
+	proj = get_project_by_id(id.to_i)
+	if proj then
+		key_array.each do |arr|
+			printf(layout, arr[1], proj[arr[0]])
 		end
-		
-		
+	else
+		puts "项目不存在"
 	end
+		
+		
+end
+
+if arg0 == "set" then
+	# 目前大部分内容都不可修改
+	key_array = [
+		#["name", "名称"],
+		#["port", "端口"],
+		#["git", "git地址"],
+		#["image", "镜像"],
+		#["container", "容器"],
+		#["update_hook_url", "hook更新地址"],
+		["limit","限制"]]
+
+	proj = get_project_by_id(project_select)
+	if proj == nil then
+		 puts "项目不存在"
+		 exit
+	end
+	new_val = Hash.new
+	key_array.each do |val|
+		printf("请输入[%s]的替换值,空为不更改,原(%s)\n", val[1], proj[val[0]])
+		value = STDIN.gets.rstrip
+		if value == "" then
+			new_val[val[0]] = proj[val[0]]
+		else
+			new_val[val[0].to_s] = value
+		end
+	end
+	new_val['id'] = proj['id']
+	update_project_info(new_val)
+	puts "ok"
+end
