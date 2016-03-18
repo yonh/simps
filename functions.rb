@@ -32,6 +32,13 @@ def get_sequence
 	seq
 end
 
+# 解析json文件,如果不存在则自动创建
+def parse_json_file(name)
+	file = db_file(name)
+	unless File.file?(file) then system("echo '[]'> #{file}") end
+
+	return JSON.parse(File.read(file))
+end
 # 项目数量增加1
 def inc_project_count
 	file = File.dirname(__FILE__)+"/db/project_count"
@@ -92,11 +99,11 @@ def del_project(id)
 		projects = get_projects
 		projects.delete_if { |proj| proj['id'] == id }
 		file = db_file("projects")
-        	File.open(file, 'w') do |f|
-               		f.puts projects.to_json
-        	end
-            # 删除数据库
+        File.open(file, 'w') do |f|
+            f.puts projects.to_json
         end
+            # 删除数据库
+	end
 end
 
 # 更新project信息
@@ -225,14 +232,22 @@ def backup(id)
 	end
 end
 
-# 解析json文件,如果不存在则自动创建
-def parse_json_file(name)
-	file = db_file(name)
-	unless File.file?(file) then system("echo '[]'> #{file}") end
-
-	return JSON.parse(File.read(file))
+def get_backup_records
+	parse_json_file("backups")
 end
 
+def get_backup_record_by_id(id)
+	if id!=nil then
+		backups = get_backup_records 
+		backups.each do |b|
+			if b['id'] == id then
+				return b
+			end
+		end
+	end
+end
+
+# 添加备份记录
 def add_backup_redord(data)
 	json = parse_json_file("backups")
 	file = db_file("backups")
@@ -244,3 +259,18 @@ def add_backup_redord(data)
 	end
 end
 
+# 删除备份
+def del_backup(id)
+	b = get_backup_record_by_id(id)
+	if b then
+		success = system("rm backups/#{b['filename']}")
+		if success then
+			bs = get_backup_records
+			bs.delete_if { |back| back['id'] == id }
+			file = db_file("backups")
+			File.open(file, 'w') do |f|
+				f.puts bs.to_json
+			end
+		end
+	end
+end

@@ -146,6 +146,16 @@ if arg0 == "ls" then
 
 	color_print("也可以使用tiny_dep info id 显示详情", "yellow")
 end
+if arg0 == "backups" then
+	layout = "%-3s %-20s\n"
+	printf(layout, "id", "项目名称")
+	projects = get_projects
+	projects.each do |proj|
+		printf(layout, proj['id'], proj['name'])
+	end
+
+	color_print("也可以使用tiny_dep info id 显示详情", "yellow")
+end
 
 # 查看项目详情
 if arg0 == "info" then
