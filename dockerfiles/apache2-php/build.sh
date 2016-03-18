@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ "$1" = "dev" ]; then
-	cp Dockerfile1 Dockerfile
+	sed -i 's/#RUN userdel www-data/RUN userdel www-data/g' Dockerfile
 	docker build -t tinystime/php-apache2:dev .
 else
-	cp Dockerfile2 Dockerfile
-	docker build -t tinystime/php-apache2 .
+	sed -i 's/RUN userdel www-data/#RUN userdel www-data/g' Dockerfile
+	docker build -t tinystime/php .
 fi
