@@ -1,12 +1,15 @@
 #!/bin/bash
 app_dir="/opt/tiny_dep"
+backups_dir="/opt/tiny_dep/backups"
 if [ ! -d $app_dir ]; then  
 	mkdir -p $app_dir
 	cp -r db $app_dir/
 	echo "export PATH=\"\$PATH:$app_dir\"" >> ~/.bashrc
 	echo "请运行source ~/.bashrc使环境变量生效"
 fi
-
+if [ ! -d $backups_dir ]; then  
+	mkdir -p $backups_dir
+fi
 if [ ! -f "/usr/bin/ruby" ]; then
 	apt-get update && apt-get install -y ruby-dev make && gem install bundle
 fi

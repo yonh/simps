@@ -18,8 +18,18 @@ end
 
 # 获取项目数量
 def get_project_count
-	file = File.dirname(__FILE__)+"/db/project_count"
+	file = db_file("project_count")
 	File.read(file).to_i
+end
+
+# 获取学列id
+def get_sequence
+	file = db_file("sequence")
+	# 默认为0
+	unless File.file?(file) then system("echo '0'> #{file}") end
+	seq = File.read(file).to_i + 1
+	File.open(file, "w") { |f| f.puts seq }
+	seq
 end
 
 # 项目数量增加1
@@ -38,10 +48,7 @@ def project_update_url(name)
 end
 # 获取所有项目
 def get_projects
-	file = File.dirname(__FILE__)+"/db/projects"
-	unless File.file?(file) then system("echo '[]'> #{file}") end
-
-	return JSON.parse(File.read(file))
+	parse_json_file("projects")
 end
 # 根据name获取项目
 def get_project(name)
@@ -193,3 +200,47 @@ def color_print(text, color)
 		puts "\033[32m#{text}\033[0m"
 	end
 end
+
+
+# 备份仙姑
+def backup(id)
+	proj = get_project_by_id(id)
+	time = Time.new
+	filename =  proj["name"] + "_" + time.strftime("%y%m%d-%H%M%S") + ".tar.gz"
+	success = system("tar -C /www -czf backups/#{filename} #{proj['name']} 2>/dev/null")
+	if success then
+		# 添加备份记录
+		id = get_sequence
+		data = Hash.new
+		data["id"] = get_sequence
+		data["pid"] = proj['id']
+		data["filename"] = filename
+		data["time"] = time.strftime("%Y-%m-%d %H:%M:%S")
+		#data["size"] = File.size("backups/"+filename)
+		data["size"] = `du -h backups/#{filename}|awk '{print $1}'`.rstrip
+		add_backup_redord(data)
+	else
+		# 失败后删除备份文件
+		system("rm -f backups/#{filename}")
+	end
+end
+
+# 解析json文件,如果不存在则自动创建
+def parse_json_file(name)
+	file = db_file(name)
+	unless File.file?(file) then system("echo '[]'> #{file}") end
+
+	return JSON.parse(File.read(file))
+end
+
+def add_backup_redord(data)
+	json = parse_json_file("backups")
+	file = db_file("backups")
+	if data then
+		json.push data
+		File.open(file, 'w') do |f|
+			f.puts json.to_json
+		end
+	end
+end
+
