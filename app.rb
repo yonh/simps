@@ -5,12 +5,35 @@ require 'awesome_print'
 require 'optparse'
 require 'json'
 require 'docker'
+require File.dirname(__FILE__) + '/functions.rb'
 
 Docker.url='unix:///var/run/docker.sock'
 
 arg0 =  ARGV[0]
 
-require File.dirname(__FILE__) + '/functions.rb'
+param_keys = {
+	"new"=>		"新建应用",
+	"start"=>	"启动应用",
+	"stop"=>	"停止应用",
+	"images"=>	"查看所有镜像",
+	"redeploy"=>"更新单个应用镜像",
+	"redeployall"=>"重新所有应用的镜像",
+	"rm"=>		"删除应用",
+	"count"=>	"应用计数",
+	"ls"=>		"应用列表",
+	"backups"=>	"应用备份列表",
+	"info"=>	"应用信息详情"
+}
+# 输出
+if param_keys.include?(arg0) == false then
+	layout = "%12s  %-20s\n"
+	param_keys.each do |k, v|
+		printf(layout, k, v)
+	end
+
+	#color_print("也可以使用tiny_dep info id 显示详情", "yellow")
+end
+
 if arg0 == "images" then
 	system("docker ps")
 	#images = Docker::Image.all
