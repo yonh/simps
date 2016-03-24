@@ -57,6 +57,13 @@ end
 def get_projects
 	parse_json_file("projects")
 end
+
+# 获取所有服务器列表
+def get_servers()
+	json = parse_json_file("config")
+	json["servers"]
+end
+
 # 根据name获取项目
 def get_project(name)
 	projects = get_projects
@@ -150,16 +157,43 @@ end
 # 选择项目并返回项目信息,不存在返回nil
 def project_select
 	projects = get_projects
-        projects.each do |proj|
-                printf("%-2s %-15s\n", proj['id'], proj['name'])
-        end
+    projects.each do |proj|
+   		printf("%-2s %-15s\n", proj['id'], proj['name'])
+    end
 
-        puts "请选择项目 (0取消)"
-        id = STDIN.gets.to_i
+    puts "请选择项目 (0取消)"
+    id = STDIN.gets.to_i
 	if id==0 then
 		nil
 	else
 		id
+	end
+end
+
+
+# 选择其他服务器
+def server_select
+	servers = get_servers
+    servers.each do |serv|
+    	printf("%-2s %-15s\n", serv['id'], serv['ip'])
+    end
+
+    puts "请选择server (0取消)"
+    id = STDIN.gets.to_i
+	if id==0 then
+		nil
+	else
+		id
+	end
+end
+
+# 根据id获取项目信息
+def get_server_by_id(id)
+	if id!=nil then
+		servers = get_servers
+		servers.each do |serv|
+			if serv['id'] == id then return serv end
+		end
 	end
 end
 

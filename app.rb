@@ -22,8 +22,10 @@ param_keys = {
 	"count"=>	"应用计数",
 	"ls"=>		"应用列表",
 	"backups"=>	"应用备份列表",
-	"info"=>	"应用信息详情"
+	"info"=>	"应用信息详情",
+	"pull"=>	"拉取其他服务器的文件"
 }
+
 # 输出
 if param_keys.include?(arg0) == false then
 	layout = "%12s  %-20s\n"
@@ -89,9 +91,20 @@ if arg0 == "redeployall" then
 	end
 end
 
+# 删除项目
 if arg0 == "rm" then
 	id = project_select
 	del_project(id)
+end
+
+
+if arg0 == "pull" then
+	#puts get_servers
+	serv = get_server_by_id(server_select)
+	if serv then
+		cmd = "rsync -avzP #{serv["user"]}@#{serv["ip"]}:/opt/tiny_dep/backups /opt/tiny_dep/"
+		system(cmd);
+	end
 end
 
 if arg0 == "count" then
