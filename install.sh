@@ -27,3 +27,11 @@ cp nginx.conf.tpl $app_dir/
 
 echo "请修改文件$app_dir/db/server_ip内容更改为您服务器ip"
 
+
+# 设置更新程序开机启动
+if [ ! -f "/etc/init.d/tiny_update_hook" ]; then
+	cp tiny_update_hook.sh /etc/init.d/tiny_update_hook
+	update-rc.d tiny_update_hook defaults
+else
+	cp tiny_update_hook.sh /etc/init.d/tiny_update_hook
+fi
