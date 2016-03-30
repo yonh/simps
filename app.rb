@@ -15,6 +15,7 @@ param_keys = {
 	"new"=>		"新建应用",
 	"start"=>	"启动应用",
 	"stop"=>	"停止应用",
+	"set"=>		"修改应用信息",
 	"images"=>	"查看所有镜像",
 	"redeploy"=>"更新单个应用镜像",
 	"redeployall"=>"重新所有应用的镜像",
@@ -23,7 +24,11 @@ param_keys = {
 	"ls"=>		"应用列表",
 	"backups"=>	"应用备份列表",
 	"info"=>	"应用信息详情",
-	"pull"=>	"拉取其他服务器的文件"
+	"pull"=>	"拉取其他服务器的文件",
+	"sls"=>	"查看所有server",
+	"sset"=>	"修改server信息",
+	"srm"=>		"删除server信息",
+	"snew"=>	"新增server"
 }
 
 # 输出
@@ -183,6 +188,40 @@ if arg0 == "ls" then
 	color_print("也可以使用tiny_dep info id 显示详情", "yellow")
 end
 
+# 查看项目列表
+if arg0 == "sls" then
+	layout = "%-3s %-20s %-10s\n"
+	printf(layout, "id", "ip", "user")
+	projects = get_servers
+	projects.each do |proj|
+		printf(layout, proj['id'], proj['ip'], proj['user'])
+	end
+end
+
+# 新增server
+if arg0 == "snew" then
+	puts "请输入server ip"
+	ip = STDIN.gets.rstrip
+	puts "请输入server user"
+	user = STDIN.gets.rstrip
+
+	data = Hash.new
+	data['id'] = get_sequence
+	data['ip'] = ip
+	data['user'] = user
+	add_server(data)
+end
+
+# 新增server
+if arg0 == "sset" then
+
+end
+
+# 删除server
+if arg0 == "srm" then
+	del_server(999)
+end
+
 if arg0 == "backups" then
 	layout = "%-3s %-20s\n"
 	printf(layout, "id", "项目名称")
@@ -249,3 +288,6 @@ if arg0 == "set" then
 	update_project_info(new_val)
 	puts "ok"
 end
+
+
+# end code
