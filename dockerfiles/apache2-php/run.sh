@@ -7,4 +7,4 @@ LOCKFILE=/run/apache2/apache2.pid
 trap "{ rm -f $LOCKFILE ; exit 255; }" EXIT
 /usr/sbin/apache2ctl -DFOREGROUND
 
-exit 0
+#exit 0
