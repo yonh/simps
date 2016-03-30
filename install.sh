@@ -16,6 +16,8 @@ fi
 
 # install docker
 bash docker-install.sh
+# build images
+bash build-image.sh
 
 bundle install
 
