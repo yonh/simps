@@ -1,9 +1,28 @@
+#!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 require 'json'
 require 'docker'
 
 Docker.url='unix:///var/run/docker.sock'
 
+
+Dir.glob( File.dirname(__FILE__) + "/functions/*.rb" ).each { |file|
+	require file
+}
+
+# 写入到config文件
+# field key
+# value 覆盖值
+def write_json(key, value)
+	file = File.dirname(__FILE__)+"/db/config"
+	json = parse_json_file("config")
+	json[key] = value
+
+	File.open(file, 'w') do |f|
+		f.puts json.to_json
+	end
+
+end
 def write_to_file (file, txt)
 	if File.exists?(file) then
 		puts "文件:#{file}已存在,写入失败"
@@ -22,7 +41,7 @@ def get_project_count
 	File.read(file).to_i
 end
 
-# 获取学列id
+# 获取序列id
 def get_sequence
 	file = db_file("sequence")
 	# 默认为0
@@ -56,12 +75,6 @@ end
 # 获取所有项目
 def get_projects
 	parse_json_file("projects")
-end
-
-# 获取所有服务器列表
-def get_servers()
-	json = parse_json_file("config")
-	json["servers"]
 end
 
 # 根据name获取项目
@@ -170,32 +183,6 @@ def project_select
 	end
 end
 
-
-# 选择其他服务器
-def server_select
-	servers = get_servers
-    servers.each do |serv|
-    	printf("%-2s %-15s\n", serv['id'], serv['ip'])
-    end
-
-    puts "请选择server (0取消)"
-    id = STDIN.gets.to_i
-	if id==0 then
-		nil
-	else
-		id
-	end
-end
-
-# 根据id获取项目信息
-def get_server_by_id(id)
-	if id!=nil then
-		servers = get_servers
-		servers.each do |serv|
-			if serv['id'] == id then return serv end
-		end
-	end
-end
 
 # 选择镜像,不存在返回nil
 def image_select 

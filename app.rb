@@ -212,14 +212,39 @@ if arg0 == "snew" then
 	add_server(data)
 end
 
-# 新增server
+# 修改server信息
 if arg0 == "sset" then
+	key_array = [
+		["ip", "ip"],
+		["user", "用户名"]
+	]
 
+	id = server_select
+	serv = get_server_by_id(id)
+	if serv == nil then
+		puts 'server不存在'
+		exit
+	end
+
+	new_val = Hash.new
+	key_array.each do |val|
+		printf("请输入[%s]的替换值,空为不更改,原(%s)\n", val[1], serv[val[0]])
+		value = STDIN.gets.rstrip
+		if value == "" then
+			new_val[val[0]] = serv[val[0]]
+		else
+			new_val[val[0].to_s] = value
+		end
+	end
+	new_val['id'] = serv['id']
+	update_server_info(new_val)
+	puts "ok"
 end
 
 # 删除server
 if arg0 == "srm" then
-	del_server(999)
+	id = server_select
+	del_server(id)
 end
 
 if arg0 == "backups" then
