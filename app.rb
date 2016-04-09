@@ -144,6 +144,7 @@ if arg0 == "new" then
 	# 下载代码
 	app_dir= "/www/#{name}"
 	system("git clone #{git} #{app_dir}")
+	system("chown www-data.www-data #{app_dir} -R")
 
 	image = image_select
 	if image == nil then
