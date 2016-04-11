@@ -2,8 +2,8 @@
 
 if [ "$1" = "dev" ]; then
 	gsed -i 's/# RUN userdel www-data/RUN userdel www-data/g' Dockerfile
-	docker build -t tinystime/php-laravel:dev .
+	docker build -t tinystime/apache2-laravel:dev .
 else
 	sed -i 's/^RUN userdel www-data/# RUN userdel www-data/g' Dockerfile
-	docker build -t tinystime/php-laravel .
+	docker build -t tinystime/apache2-laravel .
 fi
