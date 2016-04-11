@@ -47,3 +47,24 @@ def del_server(id)
 	servers.delete_if { |s| s['id'] == id }
 	write_json("servers", servers);
 end
+
+# 更新server信息
+def update_server_info(data)
+	change = false
+	servers = get_servers
+	servers.each do |serv|
+		if serv['id'] == data['id'] then
+			change = true
+			data.each do |k, v|
+				serv[k] = v
+			end
+			break
+		end
+	end
+	# save change
+	if change then
+		write_json('servers', servers)
+	end
+end
+
+
