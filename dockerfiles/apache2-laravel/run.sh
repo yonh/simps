@@ -2,9 +2,12 @@
 
 chown www-data.www-data /www -R
 
-LOCKFILE=/run/apache2/apache2.pid
-[ -f $LOCKFILE ] && exit 0
-trap "{ rm -f $LOCKFILE ; exit 255; }" EXIT
+PID=/run/apache2/apache2.pid
+if [ -f $PID ]; then
+	cat $PID |xargs kill -9 >/dev/null 2>/dev/null
+fi
+
+
 /usr/sbin/apache2ctl -DFOREGROUND
 
-#exit 0
+exit 0
