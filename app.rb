@@ -12,6 +12,7 @@ Docker.url='unix:///var/run/docker.sock'
 arg0 =  ARGV[0]
 
 param_keys = {
+	"mysql"=>	"mysql",
 	"new"=>		"新建应用",
 	"start"=>	"启动应用",
 	"stop"=>	"停止应用",
@@ -316,4 +317,7 @@ if arg0 == "set" then
 end
 
 
+if arg0 == "mysql" then
+	connect
+end
 # end code

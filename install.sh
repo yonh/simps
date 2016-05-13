@@ -11,7 +11,7 @@ if [ ! -d $backups_dir ]; then
 	mkdir -p $backups_dir
 fi
 if [ ! -f "/usr/bin/ruby" ]; then
-	apt-get update && apt-get install -y ruby-dev nginx make && gem install bundle
+	apt-get update && apt-get install -y ruby-dev nginx make libmysqlclient-dev && gem install bundle
 fi
 
 # install docker
