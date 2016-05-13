@@ -128,12 +128,18 @@ end
 
 # 更新project信息
 def update_project_info(data)
+	change_keys = {}
 	change = false
 	projects = get_projects
+	project_name = ""
 	projects.each do |proj|
 		if proj['id'] == data['id'] then
+			project_name = proj["name"]
 			change = true
 			data.each do |k, v|
+				if proj[k] != v then
+					change_keys[k] = 1
+				end
 				proj[k] = v
 			end
 			break
@@ -141,6 +147,16 @@ def update_project_info(data)
 	end
 	# save change
 	if change then
+		
+		# 修改项目git地址
+		if change_keys.has_key?("git") then
+			command = "cd /www/#{project_name};"
+			command+= "git remote rm origin;"
+			command+= "git remote add origin " + data["git"]
+			system(command)
+		end
+
+
 		file = db_file("projects")
         File.open(file, 'w') do |f|
        		f.puts projects.to_json

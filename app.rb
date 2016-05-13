@@ -289,7 +289,7 @@ if arg0 == "set" then
 	key_array = [
 		#["name", "名称"],
 		#["port", "端口"],
-		#["git", "git地址"],
+		["git", "git地址"],
 		#["image", "镜像"],
 		#["container", "容器"],
 		#["update_hook_url", "hook更新地址"],
