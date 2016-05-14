@@ -115,6 +115,17 @@ def del_project(id)
        	system("docker rm -f #{proj['container']}")
        	# 删除本地文件
 		system("rm -rf #{proj['app_dir']}")
+        # 删除数据库
+		if proj["db_name"] then
+			puts "是否删除项目关联用户(y/n)"
+			y_or_n = STDIN.gets.rstrip
+			delete_user(proj["db_user"], "%") if y_or_n=="y" || y_or_n == "Y"
+
+			puts "是否删除项目关联数据库(y/n)"
+			y_or_n = STDIN.gets.rstrip
+			delete_db(proj["db_name"]) if y_or_n=="y" || y_or_n == "Y"
+		end
+
        	# 删除项目记录
 		projects = get_projects
 		projects.delete_if { |proj| proj['id'] == id }
@@ -122,7 +133,6 @@ def del_project(id)
         File.open(file, 'w') do |f|
             f.puts projects.to_json
         end
-            # 删除数据库
 	end
 end
 

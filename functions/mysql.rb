@@ -5,7 +5,6 @@ def get_mysql_client
 		client = Mysql2::Client.new(
 			host: "127.0.0.1",
 	    	username: 'root',
-			#password: '2nAAD3uJF2',
 			password: 'root',
 			connect_timeout: 10
 		)
@@ -27,6 +26,7 @@ def delete_user(user, host)
 	if user and host then
 		sql = "delete from mysql.user where user='#{user}' and host='#{host}'"
 		get_mysql_client.query(sql)
+		get_mysql_client.query("flush privileges")
 	end
 end
 
@@ -41,6 +41,12 @@ def create_db(dbname, user)
 	end
 end
 
+def delete_db(dbname)
+	client = get_mysql_client
+	sql = "drop database #{dbname}"
+	client.query(sql)
+end
+
 def users
 	client = get_mysql_client
 	result = client.query("select user,host from mysql.user");
@@ -52,6 +58,7 @@ end
 
 #create_user('%','u_test','12345')
 #create_db('db_test', 'u_test')
-delete_user('u_test', '%')
-users
+#delete_user('u_test', '%')
+#users
+
 
