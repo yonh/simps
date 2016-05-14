@@ -7,6 +7,7 @@ GEM
       json
     excon (0.47.0)
     json (1.8.3)
+    mysql2 (0.4.3)
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
@@ -23,6 +24,7 @@ DEPENDENCIES
   awesome_print
   docker-api
   json (= 1.8.3)
+  mysql2 (= 0.4.3)
   sinatra
 
 BUNDLED WITH

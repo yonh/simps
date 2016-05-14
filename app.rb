@@ -120,9 +120,9 @@ if arg0 == "new" then
 	name = STDIN.gets.rstrip
 	nginx_config_file = "/etc/nginx/conf.d/"+name+".conf"
 	if File.exists?(nginx_config_file) or get_project(name)!=nil then
-                puts "该项目已存在,请选择其他名称"
-                exit
-        end
+		puts "该项目已存在,请选择其他名称"
+      	exit
+    end
 	
 	port = get_project_count + 10000
 	
@@ -146,6 +146,23 @@ if arg0 == "new" then
 	system("git clone #{git} #{app_dir}")
 	system("chown www-data.www-data #{app_dir} -R")
 
+
+	puts "是否创建数据库(y/n)"
+	y_or_n = STDIN.gets.rstrip
+	if y_or_n == "y" || y_or_n == "Y" then
+		puts "请输入数据库名称(数据库会加上前缀db_)"
+		dbname = "db_" + STDIN.gets.rstrip
+		puts "请输入数据库用户(数据库会加上前缀u_)"
+		dbuser = "u_" + STDIN.gets.rstrip
+		puts "请输入数据库用户密码,留空则系统自动生成"
+		dbpass = STDIN.gets.rstrip
+		dbpass = [*('a'..'z'),*('A'..'Z'),*(0..9)].shuffle[0..19].join if dbpass==""
+	else
+		dbname=""
+		dbuser=""
+		dbpass=""
+	end
+
 	image = image_select
 	if image == nil then
 		image = "tinystime/php-apache2:latest"
@@ -168,7 +185,18 @@ if arg0 == "new" then
 	project['image'] = image
 	project['limit'] = limit
 	project['update_hook_url'] = project_update_url(name)
+	project['db_name'] = dbname
+	project['db_user'] = dbuser
+	project['db_pass'] = dbpass
 	add_project(project)
+
+	# 创建数据库
+	if dbname && dbuser && dbpass then
+		puts 'create db'
+		create_user('%', dbuser , dbpass)
+		puts 'create db user'
+		create_db(dbname, dbuser)
+	end
 	
 	#项目数自增
 	inc_project_count	
@@ -269,7 +297,10 @@ if arg0 == "info" then
 		["image", "镜像"],
 		["container", "容器"],
 		["update_hook_url", "hook更新地址"],
-		["limit","限制"]]
+		["limit","限制"],
+		["db_name","数据库"],
+		["db_user","数据库用户"],
+		["db_pass","数据库密码"]]
 	id = ARGV[1]
 	layout = "%-15s : %-10s\n"
 	proj = get_project_by_id(id.to_i)
