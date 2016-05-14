@@ -1,11 +1,13 @@
 require 'mysql2'
+require 'json'
 
 def get_mysql_client
 	begin
+    	config = parse_json_file("mysql_config")
 		client = Mysql2::Client.new(
-			host: "127.0.0.1",
-	    	username: 'root',
-			password: 'root',
+			host: config["host"],
+	    	username: config["user"],
+			password: config["password"],
 			connect_timeout: 10
 		)
 		client
@@ -55,10 +57,4 @@ def users
   		p row
   	end
 end
-
-#create_user('%','u_test','12345')
-#create_db('db_test', 'u_test')
-#delete_user('u_test', '%')
-#users
-
 
