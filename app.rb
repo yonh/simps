@@ -107,8 +107,17 @@ if arg0 == "pull" then
 	#puts get_servers
 	serv = get_server_by_id(server_select)
 	if serv then
+		# 部分配置文件
+		configs = ["auth_ip", "mysql_config","project_count","projects","sequence"]
+		configs.each do |conf|
+			cmd = "rsync -avzP #{serv["user"]}@#{serv["ip"]}:/opt/tiny_dep/db/#{conf} /opt/tiny_dep/db/"
+			system(cmd)
+		end
+
 		cmd = "rsync -avzP #{serv["user"]}@#{serv["ip"]}:/opt/tiny_dep/backups /opt/tiny_dep/"
 		system(cmd);
+		cmd = "rsync -avzP #{serv["user"]}@#{serv["ip"]}:/www /"
+		#system(cmd);
 	end
 end
 
