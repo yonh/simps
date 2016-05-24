@@ -26,7 +26,7 @@ server {
         proxy_busy_buffers_size    64k;
         proxy_temp_file_write_size 64k;
    }
-   location ~* ^.+\.(js|css|ico|gif|jpg|jpeg|png|html|htm)$ {
+   location ~* ^.+\.(js|css|ico|gif|jpg|jpeg|png|html|htm|woff|svg|ttf|eot)$ {
         proxy_pass   http://{appname};
                 log_not_found off;
                 access_log off;
